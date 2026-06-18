@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Cafe Uganda</title>
+<link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="logo2.png" alt="ELDADE Logo" class="logo-icon">
+        <h1 class="logo-name">
+            <button id="viewCartBtn" onclick="openCart()">
+                🛒 send order (<span id="cartCount">0</span>)
+            </button>
+        </h1>
+    </div>
+</header>
+
+<div id="homePage">
+    <div class="hero">
+        <h2>Choose Your Favorite Combo</h2>
+        <p>Tap any combo to start your order</p>
+    </div>
+    <div class="grid" id="comboGrid"></div>
+</div>
+
+<div class="order-page" id="orderPage">
+    <button class="back" onclick="goHome()">⬅ Back to Menu</button>
+
+    <div class="form-box">
+        <h3>Delivery Details</h3>
+        <input id="name" placeholder="Your Name">
+        <input id="phone" placeholder="Phone Number">
+        <textarea id="address" placeholder="Delivery Address"></textarea>
+
+        <button class="gps" onclick="getGPS()">📍 Share GPS Location</button>
+        <p id="gpsStatus">Location not shared</p>
+    </div>
+
+    <div class="cart-box">
+        <h3>Order Summary</h3>
+        <div id="cartItems"></div>
+        <h3>Total: UGX <span id="total">0</span></h3>
+    </div>
+
+    <button class="send" onclick="sendOrder()">Send Order</button>
+</div>
+
+<script>
+const whatsappNumber = "256750802680";
+
+const combos = [
+    {name: "tibs frifr", price: 12000, img: "tibs.WEBP", video: "v1.mp4"},
+    {name: "Family Pizza Combo", price: 45000, img: "pizaa 1 with co.jpg"},
+    {name: "Pepperoni Feast", price: 50000, img: "pizza2.jpg"},
+    {name: "Cheese Lovers Pizza", price: 42000, img: "pizza3.jpg"},
+    {name: "Chicken Pizza Combo", price: 48000, img: "pizza4.jpg"},
+    {name: "BBQ Pizza Combo", price: 52000, img: "pizza5.jpg"},
+    {name: "Mega Pizza Deal", price: 65000, img: "pizza6.jpg"},
+    {name: "Classic Burger Combo", price: 30000, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"},
+    {name: "Double Burger Combo", price: 35000, img: "https://images.unsplash.com/photo-1550547660-d9450f859349"},
+    {name: "Cheese Burger Meal", price: 32000, img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add"},
+    {name: "Mega Burger Feast", price: 40000, img: "https://images.unsplash.com/photo-1550317138-10000687a72b"},
+    {name: "Chicken Burger Combo", price: 34000, img: "https://images.unsplash.com/photo-1525059696034-4967a729002e"},
+    {name: "Family Burger Pack", price: 60000, img: "https://images.unsplash.com/photo-1586816001966-79b736744398"}
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let mapsLink = "Not provided";
+
+function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function startVideo(card){
+    const video = card.querySelector(".food-video");
+    // Only attempt playback if a valid video source exists
+    if (video && video.querySelector('source').getAttribute('src') !== "undefined") {
+        video.play().catch(err => console.log("Video playback interrupted"));
+    }
+}
+
+function stopVideo(card){
+    const video = card.querySelector(".food-video");
+    if (video && video.querySelector('source').getAttribute('src') !== "undefined") {
+        video.pause();
+        video.currentTime = 0;
+    }
+}
+
+function loadCombos(){
+    const grid = document.getElementById("comboGrid");
+    grid.innerHTML = combos.map((c, i) => `
+        <div class="card"
+             ontouchstart="startVideo(this)"
+             onmouseenter="startVideo(this)"
+             onmouseleave="stopVideo(this)"
+             onclick="selectCombo(${i})">
+            <div class="media-box">
+                <img src="${c.img}" alt="${c.name}" class="food-image">
+                ${c.video ? `
+                <video class="food-video" muted loop playsinline>
+                    <source src="${c.video}" type="video/mp4">
+                </video>` : ''}
+            </div>
+            <div class="info">
+                <h3>${c.name}</h3>
+                <p class="price">UGX ${c.price.toLocaleString()}</p>
+                <button class="added">Order This Combo</button>
+            </div>
+        </div>`).join("");
+}
+
+function selectCombo(index){
+    const existing = cart.find(item => item.name === combos[index].name);
+    if(existing){
+        existing.qty++;
+    } else {
+        cart.push({ ...combos[index], qty: 1 });
+    }
+    saveCart(); 
+    updateCart();
+    alert(combos[index].name + " added to cart");
+}
+
+function openCart(){
+    document.getElementById("homePage").style.display = "none";
+    document.getElementById("orderPage").style.display = "block";
+    updateCart();
+}
+
+function goHome(){
+    document.getElementById("orderPage").style.display = "none";
+    document.getElementById("homePage").style.display = "block";
+}
+
+function updateCart(){
+    let html = "";
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        const subTotal = item.price * item.qty;
+        total += subTotal;
+        html += `
+        <div class="cart-item">
+            <p><b>${item.name}</b></p>
+            <button onclick="changeQty(${index},-1)">➖</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty(${index},1)">➕</button>
+            <span>UGX ${subTotal.toLocaleString()}</span>
+        </div>
+        `;
+    });
+
+    document.getElementById("cartItems").innerHTML = html;
+    document.getElementById("total").innerText = total.toLocaleString();
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById("cartCount").innerText = count;
+}
+
+function changeQty(index, amount){
+    cart[index].qty += amount;
+    if(cart[index].qty <= 0){
+        cart.splice(index, 1);
+    }
+    saveCart();
+    updateCart();
+}
+
+function getGPS(){
+    if(!navigator.geolocation){
+        alert("GPS not supported by your browser");
+        return;
+    }
+    document.getElementById("gpsStatus").innerText = "Locating...";
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            // Fixed the syntax string template bug and targeted standard Google Maps URL structure
+            mapsLink = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            document.getElementById("gpsStatus").innerText = "📍 GPS attached successfully";
+        },
+        (err) => {
+            alert("Unable to get location. Please allow GPS access.");
+            document.getElementById("gpsStatus").innerText = "Location access denied";
+        }
+    );
+}
+
+function sendOrder(){
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+
+    if(!name || !phone || !address){
+        alert("Please fill all delivery details");
+        return;
+    }
+
+    if(cart.length === 0){
+        alert("Select a combo first");
+        return;
+    }
+
+    let total = 0;
+    let msg = `*NEW ELDADE ORDER*\n\n`;
+    msg += `*Order ID:* ${orderId}\n`;
+    msg += `*Name:* ${name}\n`;
+    msg += `*Phone:* ${phone}\n`;
+    msg += `*Address:* ${address}\n`;
+    msg += `*GPS:* ${mapsLink}\n\n`;
+    msg += `*Items Ordered:*\n`;
+
+    cart.forEach(item => {
+        const subTotal = item.price * item.qty;
+        // Fixed %0A bug by using native newline formatting
+        msg += `• ${item.name} x${item.qty} - UGX ${subTotal.toLocaleString()}\n`;
+        total += subTotal;
+    });
+
+    msg += `\n*Total Amount:* UGX ${total.toLocaleString()}`;
+    
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+
+    // Clear cart completely after successfully routing to WhatsApp
+    cart = [];
+    localStorage.removeItem("cart");
+    updateCart();
+}
+
+const orderId = "ELD" + Date.now().toString().slice(-6);
+loadCombos();
+updateCart();
+</script>
+</body>
+</html>

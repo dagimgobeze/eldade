@@ -1,0 +1,284 @@
+:root {
+    --primary-color: #ff4757;
+    --secondary-color: #ffa502;
+    --dark-color: #d8dce5;
+    --light-color: #f1f2f6;
+    --white: #ffffff;
+    --gray: #747d8c;
+    --success-color: #2ed573;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #fafafa;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+.logo-container{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:865px;
+}
+
+.logo-icon{
+    width:260px;
+    height:160px;
+}
+
+.logo-name{
+    margin:0;
+    font-size:32px;
+    font-family:Arial, sans-serif;
+    font-weight:bold;
+    color:#008060;
+}
+header h1 {
+    font-size: 1.8rem;
+}
+#viewCartBtn{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#72d3c1;
+    color:rgb(53, 3, 3);
+    border:none;
+    padding:15px 20px;
+    border-radius:50px;
+    font-size:16px;
+    cursor:pointer;
+    z-index:999;
+}
+
+.cart-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    margin-bottom:10px;
+    background:#75a921;
+    border-radius:10px;
+}
+
+.cart-item button{
+    padding:5px 10px;
+    border:none;
+    background:#00A082;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 30px 20px;
+    background: var(--white);
+     font-size:32px;
+    font-family:Arial, sans-serif;
+    font-weight:bold;
+    color:#008060;
+    margin-bottom: 30px;
+}
+
+.hero h2 {
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+}
+
+.hero p {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Menu Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 0 20px 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Combo Card Styling */
+.card {
+    background-color: var(--white);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card .info {
+    padding: 20px;
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--dark-color);
+}
+
+.card .price {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.card button {
+    width: 100%;
+    background-color: var(--secondary-color);
+    color: var(--dark-color);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.card:hover button {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+/* Order Page Layout */
+.order-page {
+    display: none; /* Controlled by your JS */
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* Buttons */
+button.back {
+    background: rgb(231, 107, 107);
+    border: 2px solid var(--dark-color);
+    color: var(--dark-color);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+}
+
+button.back:hover {
+    background-color: var(--dark-color);
+    color: var(--white);
+}
+
+/* Forms & Cards inside Checkout */
+.form-box, .cart-box {
+    background-color: var(--white);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.form-box h3, .cart-box h3 {
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--light-color);
+    padding-bottom: 8px;
+}
+
+/* Inputs */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primary-color);
+}
+
+textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+/* GPS Button & Status */
+button.gps {
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    border: 1px dashed var(--gray);
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+#gpsStatus {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--gray);
+    font-style: italic;
+}
+
+/* Order Summary Items */
+#cartItems p {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--light-color);
+}
+
+.cart-box h3:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-top: 15px;
+    color: var(--primary-color);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Main Action Button */
+button.send {
+    width: 100%;
+    background-color: var(--success-color);
+    color: var(--white);
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(46, 213, 115, 0.3);
+    transition: transform 0.2s;
+}
+
+button.send:hover {
+    transform: scale(1.02);
+    background-color: #26af5f;
+}
